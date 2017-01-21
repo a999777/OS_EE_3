@@ -1,39 +1,35 @@
 #include "PageTableEntry.h"
 
-
 //***********************************************************************
 // function name: PageTableEntry
 // Description: constractor - initilaize PTE to 0
 // Parameters: N/A
 // Returns: N/A
 //***********************************************************************
-PageTableEntry::PageTableEntry()
-{
-	page_address = NULL;
-	valid = false;
-	swapped = false;
+PageTableEntry::PageTableEntry() {
+	this->_frameAddress = NULL;
+	this->_valid = false;
+	this->_swapped = false;
 }
 
 //***********************************************************************
-// function name: get_page_address
+// function name: get__frameAddress
 // Description: returns a pointer to the begining of the frame
 // Parameters: N/A
 // Returns: pointer to the begining of the frame
 //***********************************************************************
-int* PageTableEntry::get_page_address()
-{
-	return page_address;
+int* PageTableEntry::get_page_address() {
+	return this->_frameAddress;
 }
 
 //***********************************************************************
-// function name: set_page_address
+// function name: set__frameAddress
 // Description: Set the pointer to a frame
 // Parameters: adr - new address
 // Returns: N/A
 //***********************************************************************
-void PageTableEntry::set_page_address(int* adr)
-{
-	page_address = adr;
+void PageTableEntry::set_page_address(int* adr) {
+	this->_frameAddress = adr;
 }
 
 //***********************************************************************
@@ -42,9 +38,8 @@ void PageTableEntry::set_page_address(int* adr)
 // Parameters: N/A
 // Returns: true - page is valid, false - page isn't valid
 //***********************************************************************
-bool PageTableEntry::is_valid()
-{
-	return valid;
+bool PageTableEntry::is_valid() {
+	return this->_valid;
 }
 
 //***********************************************************************
@@ -53,9 +48,8 @@ bool PageTableEntry::is_valid()
 // Parameters: N/A
 // Returns: true - page swapped, false - page isn't
 //***********************************************************************
-bool PageTableEntry::is_swapped()
-{
-	return swapped;
+bool PageTableEntry::is_swapped() {
+	return this->_swapped;
 }
 
 //***********************************************************************
@@ -64,9 +58,8 @@ bool PageTableEntry::is_swapped()
 // Parameters: validition new value
 // Returns: N/A
 //***********************************************************************
-void PageTableEntry::set_valid(bool _valid)
-{
-	valid = _valid;
+void PageTableEntry::set_valid(bool valid) {
+	this->_valid = valid;
 }
 
 //***********************************************************************
@@ -75,7 +68,6 @@ void PageTableEntry::set_valid(bool _valid)
 // Parameters: swap new value
 // Returns: N/A
 //***********************************************************************
-void PageTableEntry::set_swapped(bool _swapped)
-{
-	swapped = _swapped;
+void PageTableEntry::set_swapped(bool swapped) {
+	this->_swapped = swapped;
 }

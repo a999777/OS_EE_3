@@ -15,11 +15,11 @@ public:
 	void set_page_address(int* adr); //Set the pointer to a frame
 	bool is_valid(); //Returns whether the entry is valid
 	bool is_swapped(); //Returns whether the entry is swapped
-	void set_valid(bool _valid); //Allows to set whether the entry is valid
-	void set_swapped(bool _valid);//Allows to set whether the entry is swapped
+	void set_valid(bool valid); //Allows to set whether the entry is valid
+	void set_swapped(bool valid);//Allows to set whether the entry is swapped
 private:
-	int* page_address;
-	bool valid; //valid bit
-	bool swapped;
+	int* _frameAddress;
+	bool _valid; //valid bit
+	bool _swapped;
 };
 #endif

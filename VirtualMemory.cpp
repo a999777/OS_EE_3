@@ -10,9 +10,9 @@
 VirtualMemory::VirtualMemory() {
 	int i;
 	for (i = 0; i < 64; i++) {
-		freeFramesList.push(PhysMem::Access().GetFrame(i));
+		this->freeFramesList.push(PhysMem::Access().GetFrame(i));
 	}
-	allocated = 0;
+	this->allocated = 0;
 }
 
 //***********************************************************************
@@ -22,11 +22,11 @@ VirtualMemory::VirtualMemory() {
 // Returns: int*
 //***********************************************************************
 int* VirtualMemory::GetFreeFrame() {
-	if (freeFramesList.empty()) {
+	if (this->freeFramesList.empty()) {
 		return NULL;
 	}
-	int* framePtr = freeFramesList.front(); //fornt is oldest item in the queue, back is the newest
-	freeFramesList.pop();
+	int* framePtr = this->freeFramesList.front(); //fornt is oldest item in the queue, back is the newest
+	this->freeFramesList.pop();
 	memset(framePtr, 0, PAGESIZE);
 	return framePtr;
 }
@@ -39,5 +39,5 @@ int* VirtualMemory::GetFreeFrame() {
 //***********************************************************************
 void VirtualMemory::ReleaseFrame(int* framePointer) {
 	memset(framePointer, 0, PAGESIZE);
-	freeFramesList.push(framePointer);
+	this->freeFramesList.push(framePointer);
 }

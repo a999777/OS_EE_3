@@ -9,8 +9,8 @@
 //***********************************************************************
 PageDirectoryEntry::PageDirectoryEntry()
 {
-	page_table_address = NULL;
-	valid = false;
+	this->_innerTable = NULL;
+	this->_valid = false;
 }
 
 //***********************************************************************
@@ -21,8 +21,8 @@ PageDirectoryEntry::PageDirectoryEntry()
 //***********************************************************************
 PageDirectoryEntry::~PageDirectoryEntry()
 {
-	if (page_table_address != NULL)
-		delete(page_table_address);
+	if (this->_innerTable != NULL)
+		delete(this->_innerTable);
 }
 
 //***********************************************************************
@@ -33,7 +33,7 @@ PageDirectoryEntry::~PageDirectoryEntry()
 //***********************************************************************
 void PageDirectoryEntry::set_table_address(PageTableEntry* adr)
 {
-	page_table_address = adr;
+	this->_innerTable = adr;
 }
 
 //***********************************************************************
@@ -44,7 +44,7 @@ void PageDirectoryEntry::set_table_address(PageTableEntry* adr)
 //***********************************************************************
 PageTableEntry* PageDirectoryEntry::get_table_address()
 {
-	return page_table_address;
+	return this->_innerTable;
 }
 
 //***********************************************************************
@@ -55,7 +55,7 @@ PageTableEntry* PageDirectoryEntry::get_table_address()
 //***********************************************************************
 bool PageDirectoryEntry::is_valid()
 {
-	return valid;
+	return this->_valid;
 }
 
 
@@ -65,8 +65,8 @@ bool PageDirectoryEntry::is_valid()
 // Parameters: validition new value
 // Returns: N/A
 //***********************************************************************
-void PageDirectoryEntry::set_valid(bool _valid)
+void PageDirectoryEntry::set_valid(bool valid)
 {
-	valid = _valid;
+	this->_valid = valid;
 }
 
