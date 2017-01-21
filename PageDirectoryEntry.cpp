@@ -1,68 +1,72 @@
-/*
- * PageDirectoryEntry.cpp
- *
- *  Created on: 21 בינו׳ 2017
- *      Author: Amit
- */
-
 #include "PageDirectoryEntry.h"
 
-void PageDirectoryEntry::create_inner_table() {
-	//_innerTable = (PageTableEntry*)malloc(sizeof(PageTableEntry)*NUM_OF_ENTRIES);
-	//FIXME the pdf says malloc. But malloc does not call constructors. is new okay? check.
-	this->_innerTable = new PageTableEntry[NUM_OF_ENTRIES];
+
+//***********************************************************************
+// function name: PageDirectoryEntry
+// Description: constractor - initilaize PDE to 0
+// Parameters: N/A
+// Returns: N/A
+//***********************************************************************
+PageDirectoryEntry::PageDirectoryEntry()
+{
+	page_table_address = NULL;
+	valid = false;
 }
 
-bool PageDirectoryEntry::is_inner_entry_valid(int innerTableEntry) {
-	if(this->_valid == false) {
-		cout << "Detected unhandled mistake in line " << __LINE__ << endl;
-		exit(1);//TODO should never happen according to implementation (according to usage)
-		//return false;
-	}
-	return this->_innerTable[innerTableEntry].is_valid();
+//***********************************************************************
+// function name: ~PageDirectoryEntry
+// Description: destractor - free the pte table
+// Parameters: N/A
+// Returns: N/A
+//***********************************************************************
+PageDirectoryEntry::~PageDirectoryEntry()
+{
+	if (page_table_address != NULL)
+		delete(page_table_address);
 }
 
-void PageDirectoryEntry::set_inner_entry_invalid(int innerTableEntry) {
-	cout << "Detected unhandled mistake in line " << __LINE__ << endl;
-	exit(7);//TODO should never happen according to implementation (according to usage)
-	this->_innerTable[innerTableEntry].set_valid(false);
+//***********************************************************************
+// function name: set_table_address
+// Description: set the PTE table address
+// Parameters: PTE table pointer
+// Returns: N/A
+//***********************************************************************
+void PageDirectoryEntry::set_table_address(PageTableEntry* adr)
+{
+	page_table_address = adr;
 }
 
-bool PageDirectoryEntry::was_inner_entry_valid(int innerTableEntry) {
-	if(this->_valid == false) {
-		cout << "Detected unhandled mistake in line " << __LINE__ << endl;
-		exit(1);//TODO should never happen according to implementation (according to usage)
-		//return false;
-	}
-	return this->_innerTable[innerTableEntry].was_linked();
+//***********************************************************************
+// function name: get_page_address
+// Description: returns a pointer to the begining PTE table
+// Parameters: N/A
+// Returns: pointer to the begining of the PTE table
+//***********************************************************************
+PageTableEntry* PageDirectoryEntry::get_table_address()
+{
+	return page_table_address;
 }
 
-int* PageDirectoryEntry::get_page_address(int innerTableEntry) {
-	 int* frameAdr = this->_innerTable[innerTableEntry].get_page_address();
-	 if(frameAdr == NULL) { //TODO
-		 cout << "Detected unhandled mistake in line " << __LINE__ << endl;
-		 exit(1);
-	 }
-	 return frameAdr;
+//***********************************************************************
+// function name: is_valid
+// Description: returns if the Directory valid
+// Parameters: N/A
+// Returns: true -  Directory is valid, false -  Directory isn't valid
+//***********************************************************************
+bool PageDirectoryEntry::is_valid()
+{
+	return valid;
 }
 
-void PageDirectoryEntry::set_page_address(int innerTableEntry, int* adr) {
-	this->_innerTable[innerTableEntry].set_page_address(adr);
-	this->_innerTable[innerTableEntry].set_valid(true);
-	this->_innerTable[innerTableEntry].set_linked(true);
-}
 
-bool PageDirectoryEntry::is_valid() {
-	//Returns whether the entry is valid
-	return this->_valid;
+//***********************************************************************
+// function name: set_valid
+// Description: set validition of the  Directory
+// Parameters: validition new value
+// Returns: N/A
+//***********************************************************************
+void PageDirectoryEntry::set_valid(bool _valid)
+{
+	valid = _valid;
 }
-
-void PageDirectoryEntry::set_valid(bool valid) {
-	//Allows to set whether the entry is valid
-	if (this->_valid == valid) {//FIXME for debugging
-		cout << "set_valid but valid was already: " << valid << endl;
-	}
-	this->_valid = valid;
-}
-
 

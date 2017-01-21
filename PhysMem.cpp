@@ -1,26 +1,15 @@
-/*
- * PhysMem.cpp
- *
- *  Created on: 11 αιπε 2017
- *      Author: ilanmisa
- */
-
 #include "PhysMem.h"
-
 int* PhysMem::physMem;
-
 PhysMem & PhysMem::Access() {
 	static PhysMem single;
 	if (physMem == NULL) {
-		physMem = (int*)malloc(PHYSMEMSZ);
+    physMem = (int*)malloc(PHYSMEMSZ);
+   //cout << "phys addr is: " << physMem << endl;
 	}
 	return single;
 }
-
 int* PhysMem::GetFrame(int frameNumber) {
 	if (frameNumber < 0 || frameNumber >= 64)
 		throw "Invalid Frame Number";
 	return &(physMem[1024 * frameNumber]);
 }
-
-

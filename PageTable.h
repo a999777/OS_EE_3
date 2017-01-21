@@ -1,54 +1,37 @@
-/*
- * PageTable.h
- *
- *  Created on: 10 ���� 2017
- *      Author: Eitan Levin
- */
-
-#ifndef PAGETABLE_H_
-#define PAGETABLE_H_
-
-#include <fstream>
+#ifndef _PAGE_TABLE
+#define _PAGE_TABLE
 #include "PageDirectoryEntry.h"
+#include "PageTableEntry.h"
+#include <fstream>
+#include <iostream>
+#include <stdio.h>
+#define TABLE_SIZE 1024
+#define INT_BYTE_SIZE 4
+#define PAGE_BYTES 4096
+#define BIT_WISE_AND_FOR_DIRECTORY 4290772992 //for logical and - 11111111110000000000000000000000
+#define BIT_WISE_SHIFT_FOR_DIRECTORY 22	//for logical shift right
+#define BIT_WISE_AND_FOR_PAGE 4190208 //for logical and - 00000000001111111111000000000000
+#define BIT_WISE_SHIFT_FOR_PAGE 12	//for logical shift right
+#define BIT_WISE_AND_FOR_OFFSET 4095 //for logical and - 00000000000000000000111111111111
+#include <queue>
+using namespace std;
+using std::cout;
+using std::endl;
+using std::ofstream;
+using std::string;
 
-//TODO support in log file should be added, as requested in pdf
-
-//Incomplete declaration- so compiler won't scream when we use virtmem.
 class VirtualMemory;
-
 class PageTable {
-private:
-	VirtualMemory* _virtMem;
-	PageDirectoryEntry* _outerPageTable;
-	std::ofstream logFile;
-
 public:
-	//PageTable(VirtualMemory* virtMem) : _virtMem(virtMem) {
-	PageTable(VirtualMemory* virtMem) {//TODO eitan
-		this->_virtMem = virtMem;//TODO eitan
-		//_outerPageTable = (PageDirectoryEntry*)malloc(sizeof(PageDirectoryEntry)*NUM_OF_ENTRIES);
-		//FIXME the pdf says malloc. But malloc does not call constructors. is new okay?
-		this->_outerPageTable = new PageDirectoryEntry[NUM_OF_ENTRIES];
-		this->logFile.open("log.csv");
-		this->logFile << "Page Number,Virtual Address,Physical Address,Page Fault,Swap,Evicted,Allocated Page Table Entries" << endl;
-		//After that action we have 1024 un-initialized Page Directory Entries
-	}
-
-	~PageTable() {
-		if(this->_outerPageTable != NULL) {
-			delete[] this->_outerPageTable;
-			this->_outerPageTable = NULL;//TODO eitan
-		}
-	}
-
-	//Here we get a virtual address of a page and we are expected to return a
-	//pointer to the frame where it is located.
-	int* GetPage (unsigned int adr);
-
-	void setTableEntryInvalid(int PageDirectoryEntry, int PageTableEntry);
+	PageTable();
+	~PageTable();
+	int* GetPage(unsigned int adr, VirtualMemory* mem);
+private:
+	PageDirectoryEntry _outerPageTable[TABLE_SIZE]; //cr3 - PDE array
+	FILE * pFile;
+	void write(string printline);
+	queue<unsigned int> usedPages; // save all the pages in RAM by order
+	int swapper(VirtualMemory* mem); // func to transfer page to swap device
 
 };
-
-
-
-#endif /* PAGETABLE_H_ */
+#endif
