@@ -10,7 +10,31 @@
 
 #include <cstdlib>
 #include <iostream> //TODO remove, debug
+#include <fstream>//TODO
 
+class tableEntryVaild {
+public:
+	tableEntryVaild() : _valid(false) {
+		//std::cout << "tableEntryVaild constructor" << std::endl;//TODO eitan
+	}
+		//When invoking this constructor that means we are creating an entry
+		//inside the inner page table
+
+	~tableEntryVaild() = default;
+
+	bool is_valid() {
+		//std::cout << "tableEntryVaild is_valid" << std::endl;//TODO eitan
+		return (this->_valid);
+	}
+
+	void set_valid(bool valid) {
+		//std::cout << "tableEntryVaild set_valid" << std::endl;//TODO eitan
+		this->_valid = valid;
+	}
+
+private:
+	bool _valid;
+};
 
 /*
  * This file will represent each entry in the inner page table. That means that
@@ -20,7 +44,7 @@
 
 class PageTableEntry {
 public:
-	PageTableEntry() : _valid(false),_framePointedBegining(NULL), _linked(false) {}
+	PageTableEntry() : _valid(false), _framePointedBegining(NULL), _linked(false), _isValid() {}
 		//When invoking this constructor that means we are creating an entry
 		//inside the inner page table
 
@@ -42,6 +66,7 @@ private:
 	bool _valid;
 	int* _framePointedBegining;
 	bool _linked;
+	tableEntryVaild _isValid;
 };
 
 

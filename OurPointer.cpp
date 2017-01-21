@@ -18,7 +18,7 @@ int& OurPointer::operator*() {
 	return *(physmemFrame + offset); TODO old address format*/
 	int offset;
 	GET_OFFSET_BITS(_adr, offset);
-	return *(_vrtlMem->GetPage(_adr) + offset);
+	return *((_vrtlMem->GetPage(_adr)) + offset);
 }
 
 //Overload ++operator
@@ -36,7 +36,7 @@ OurPointer OurPointer::operator++(int) {
 	this->operator++(); //Using the pre-fix operator we already overloaded
 	return beforeAddition; TODO old format */
 	OurPointer beforeAddition(_adr >> 2, _vrtlMem);
-	operator++();
+	this->operator++();
 	return beforeAddition;
 }
 

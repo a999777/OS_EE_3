@@ -17,6 +17,7 @@
 #include "PageTable.h"
 #include "SwapDevice.h"
 #include "MacroDefine.h"
+#include <map>//TODO eitan
 
 #define PAGESIZE 4096
 #define VIRTMEMSIZE 4294967296
@@ -39,7 +40,9 @@ public:
 		SwapDevice swap;
 		queue<unsigned int> allocationOrder;
 
-	int* physmemAdds[NUMOFFRAMES]; //TODO debug
+		//int* physmemAdds[NUMOFFRAMES]; //TODO debug
+		int** physmemAdds;//TODO eitan
+		//map<int, int*> freeFramesMap;//TODO eitan
 	/*
 	 * VirtualMemory: Initialize freeFramesList to contain all 64 frame	pointers as given by PhysMem Class,
 	 * initialize the PageTable, give the pageTable a pointer to this object so it can
@@ -47,16 +50,32 @@ public:
 	 */
 	VirtualMemory(): allocated(0), freeFramesList(), pageTable(this), swap(SwapDevice()), \
 			allocationOrder(){
+		physmemAdds = new int*[NUMOFFRAMES];//TODO eitan
+		//map<int, int*>::value_type pair();
+		for(int i = 0; i < NUMOFFRAMES ; i++) {
+			freeFramesList.push(PhysMem::Access().GetFrame(i));	//Now our list will contain pointers to all frames
+			physmemAdds[i] = PhysMem::Access().GetFrame(i); //TODO debug only
+			//map<int, int*>::value_type mapPair(i, PhysMem::Access().GetFrame(i));
+			//freeFramesMap.insert(mapPair);
+		}
+	}
+	/*VirtualMemory(const VirtualMemory& obj) {
+		this->allocated = obj.allocated;
+		free
+		physmemAdds = new int*[NUMOFFRAMES];//TODO eitan
 		for(int i = 0; i < NUMOFFRAMES ; i++) {
 			freeFramesList.push(PhysMem::Access().GetFrame(i));	//Now our list will contain pointers to all frames
 			physmemAdds[i] = PhysMem::Access().GetFrame(i); //TODO debug only
 		}
-	}
+	}*/
 
 	~VirtualMemory() {
 		allocated = 0;
 		while(!(freeFramesList.empty())) {
 			freeFramesList.pop();
+		}
+		while(!(freeFramesMap.empty())) {
+			freeFramesMap.clear();
 		}
 		//TODO might leak because we didn't free it?
 	}
@@ -85,7 +104,8 @@ public:
 			throw "We are limited to 4294967296 bytes with our 32 bit address size";
 		}
 		OurPointer ptr(allocated, this);
-		allocated += size;
+		//allocated += size;
+		allocated += (size*4);//TODO why not this?
 		return ptr;
 	}
 

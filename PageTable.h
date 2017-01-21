@@ -23,18 +23,21 @@ private:
 	std::ofstream logFile;
 
 public:
-	PageTable(VirtualMemory* virtMem) : _virtMem(virtMem) {
+	//PageTable(VirtualMemory* virtMem) : _virtMem(virtMem) {
+	PageTable(VirtualMemory* virtMem) {//TODO eitan
+		this->_virtMem = virtMem;//TODO eitan
 		//_outerPageTable = (PageDirectoryEntry*)malloc(sizeof(PageDirectoryEntry)*NUM_OF_ENTRIES);
 		//FIXME the pdf says malloc. But malloc does not call constructors. is new okay?
-		_outerPageTable = new PageDirectoryEntry[NUM_OF_ENTRIES];
-		logFile.open("log.csv");
-		logFile <<"Page Number,Virtual Address,Physical Address,Page Fault,Swap,Evicted,Allocated Page Table Entries" << endl;
+		this->_outerPageTable = new PageDirectoryEntry[NUM_OF_ENTRIES];
+		this->logFile.open("log.csv");
+		this->logFile << "Page Number,Virtual Address,Physical Address,Page Fault,Swap,Evicted,Allocated Page Table Entries" << endl;
 		//After that action we have 1024 un-initialized Page Directory Entries
 	}
 
 	~PageTable() {
-		if(_outerPageTable != NULL) {
-			delete [] _outerPageTable;
+		if(this->_outerPageTable != NULL) {
+			delete[] this->_outerPageTable;
+			this->_outerPageTable = NULL;//TODO eitan
 		}
 	}
 

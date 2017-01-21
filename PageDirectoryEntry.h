@@ -27,19 +27,21 @@ class PageDirectoryEntry {
 public:
 	//Notice the default constructor intentionally does !not allocate! entries.
 	//This is done in order to mimic the behavior of a linux system.
-	PageDirectoryEntry() : _valid(false),_innerTable(NULL) {}
+	PageDirectoryEntry() : _valid(false), _innerTable(NULL) {}
 
 	~PageDirectoryEntry() {
-		if(_innerTable != NULL) {
-			delete [] _innerTable;
+		if(this->_innerTable != NULL) {
+			delete[] (this->_innerTable);
 		}
+		this->_valid = false;//TODO eitan added
+		this->_innerTable = NULL;//TODO eitan
 	}
 
 	void create_inner_table();
 
 	bool is_inner_entry_valid(int innerTableEntry);
 
-	void set_inner_entry_invalid(int PageTableEntry);
+	void set_inner_entry_invalid(int innerTableEntry);
 
 	bool was_inner_entry_valid(int innerTableEntry);
 

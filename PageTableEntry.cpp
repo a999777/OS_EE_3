@@ -9,31 +9,34 @@
 
 int* PageTableEntry::get_page_address() {
 	//Pointer to beginning of frame  
-	return _framePointedBegining;
+	return this->_framePointedBegining;
 }
 
 void PageTableEntry::set_page_address(int* adr) {
 	//Set the pointer to a frame
 	//std::cout << "set page address: " << adr << std::endl;//TODO eitan test
-	_framePointedBegining = adr;
+	//TODO maby need to allocate?
+	this->_framePointedBegining = adr;
 }
 
 bool PageTableEntry::is_valid() {
 	//Returns whether the entry is valid
-	return _valid;
+	return (this->_isValid.is_valid());//TODO
+	//return this->_valid;
 }
 
 void PageTableEntry::set_valid(bool valid) {
 	//Allows to set whether the entry is valid
-	_valid = valid;
+	(this->_isValid).set_valid(valid);//TODO
+	//this->_valid = valid;
 }
 
 bool PageTableEntry::was_linked() {
 	//Returns whether the entry was linked sometime to a frame
-	return _linked;
+	return this->_linked;
 }
 
 void PageTableEntry::set_linked(bool linked) {
 	//Allows to set whether the entry is linked to a frame
-	_linked = linked;
+	this->_linked = linked;
 }

@@ -17,9 +17,10 @@ int bugIndicator = 0;
 #define STOP_POINT 1024*64
 
 int main(){
-    VirtualMemory vrtlMem;
-
-    OurPointer ptr = vrtlMem.OurMalloc(1024*64); //That means we take everything possible in Physical memory + 1
+    //VirtualMemory vrtlMem;
+    VirtualMemory* vrtlMem = new VirtualMemory;
+    OurPointer ptr = vrtlMem->OurMalloc(1024*64); //That means we take everything possible in Physical memory + 1
+    //OurPointer ptr = vrtlMem.OurMalloc(1024*64); //That means we take everything possible in Physical memory + 1
 
 
 
@@ -62,7 +63,7 @@ int main(){
     //This one should cause swap out
     *ptr = 777;
     ptr++;*/
-
+    cout << "done test" << endl;
     return 0;
 }
 
