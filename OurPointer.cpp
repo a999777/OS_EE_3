@@ -10,39 +10,51 @@
 
 //Operator that returns the int pointed by OurPointer
 int& OurPointer::operator*() {
-	unsigned int address = _adr;
+	/*unsigned int address = _adr;
 	unsigned int offset;
 	CHANGE_ADR_INT_TO_ADR(address);
 	GET_OFFSET_BITS(address,offset);
 	int* physmemFrame = _vrtlMem->GetPage(_adr); //TODO debug
-	return *(physmemFrame + offset);
-	//FIXME!! This will be an error when there is more than one page/frame saved in physical memory
+	return *(physmemFrame + offset); TODO old address format*/
+	int offset;
+	GET_OFFSET_BITS(_adr, offset);
+	return *(_vrtlMem->GetPage(_adr) + offset);
 }
 
 //Overload ++operator
 OurPointer& OurPointer::operator++() {
-	//_adr += sizeof(_adr); TODO this is how we thought it should be. but maybe address should only store up to 1024?
+	/*
 	_adr++;
+	return *this; TODO old format */
+	_adr += sizeof(int);
 	return *this;
 }
 
 //Overload operator++ means we increment the virtual address.
 OurPointer OurPointer::operator++(int) {
-	OurPointer beforeAddition(_adr,_vrtlMem);
+	/*OurPointer beforeAddition(_adr,_vrtlMem);
 	this->operator++(); //Using the pre-fix operator we already overloaded
+	return beforeAddition; TODO old format */
+	OurPointer beforeAddition(_adr >> 2, _vrtlMem);
+	operator++();
 	return beforeAddition;
 }
 
 //Overload --operator TODO mistake in pdf??
 OurPointer& OurPointer::operator--() {
-	//_adr -= sizeof(_adr);
+	/*//_adr -= sizeof(_adr);
 	_adr--;
+	return *this; TODO old format */
+	_adr -= sizeof(int);
 	return *this;
 }
 
 //Overload operator--
 OurPointer OurPointer::operator--(int) {
-	OurPointer beforeDecrement(_adr,_vrtlMem);
+	/*OurPointer beforeDecrement(_adr,_vrtlMem);
 	this->operator--(); //Using the pre-fix operator we already overloaded
+	return beforeDecrement; TODO old format */
+	OurPointer beforeDecrement(_adr >> 2, _vrtlMem);
+	operator--();
 	return beforeDecrement;
 }

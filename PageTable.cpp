@@ -19,7 +19,7 @@ int* PageTable::GetPage (unsigned int adr) {
 	int pageTableEntryNum;
 	int offsetNum;
 
-	CHANGE_ADR_INT_TO_ADR(adr);
+	//CHANGE_ADR_INT_TO_ADR(adr); TODO not needed in new format
 	GET_MSB_BITS(adr, pageDirectoryEntryNum);
 	GET_MIDDLE_BITS(adr, pageTableEntryNum);
 	GET_OFFSET_BITS(adr, offsetNum);
@@ -47,7 +47,7 @@ int* PageTable::GetPage (unsigned int adr) {
 			/*If the inner entry is not valid and it was linked then we have to page it in.
 			 Since we only swap out when we have no room left, and we never "delete" frames,
 			 I think we can assume that we have to swap out a frame in order to make room for the new one */
-		//	cout << "try try try try try try try" << endl;//TODO eitan test
+
 			logSwapDevice = 1;
 			//TODO logEvicted should be handled here
 			int* freeAdr = _virtMem->GetFreeFrame();
@@ -59,7 +59,6 @@ int* PageTable::GetPage (unsigned int adr) {
 
 		} else {
 			//If the inner entry is not valid and the page was never linked
-			//cout << "testCount = " << testCount++ << endl;//TODO eitan test
 			int* freeAdr = _virtMem->GetFreeFrame();
 			_outerPageTable[pageDirectoryEntryNum].set_page_address(pageTableEntryNum, freeAdr);
 			_virtMem->allocationOrder.push(adr);

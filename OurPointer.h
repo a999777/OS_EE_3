@@ -13,7 +13,8 @@
 class OurPointer {
 public:
 	//Constructor
-	OurPointer(int adr, VirtualMemory* vrtlMem): _adr(adr), _vrtlMem(vrtlMem){}
+	OurPointer(int adr, VirtualMemory* vrtlMem): _adr(adr << 2), _vrtlMem(vrtlMem){}
+
 	//Destructor
 	~OurPointer() = default;
 
