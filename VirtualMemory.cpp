@@ -13,10 +13,10 @@
  * use memset(framePtr, 0, PAGESIZE) before return, might help debugging!
  */
 int* VirtualMemory::GetFreeFrame() {
-	cout << "GetFreeFrame was asked for a frame. The list still has " << freeFramesList.size() << endl; //FIXME debug only
-	do { } while(0);
+//	cout << "GetFreeFrame was asked for a frame. The list still has " << freeFramesList.size() << endl; //FIXME debug only
+
 	if(freeFramesList.empty() == true) {
-		cout << "freeFramesList.empty() == true" << endl;//TODO eitan testing
+	//	cout << "freeFramesList.empty() == true" << endl;//TODO eitan testing
 		unsigned int oldestPage = allocationOrder.front();
 		int* oldestFrame = pageTable.GetPage(oldestPage);
 
@@ -33,9 +33,9 @@ int* VirtualMemory::GetFreeFrame() {
 	//Now we are sure we still have free frames in memory
 	int* freeFramePtr = freeFramesList.front();
 	freeFramesList.pop();
-	void* memsetRes = memset(freeFramePtr, 0 ,PAGESIZE);//TODO eitan testing
+	//void* memsetRes = memset(freeFramePtr, 0 ,PAGESIZE);//TODO eitan testing
 	//cout << (int*)memsetRes << endl;//TODO eitan testing
-	//memset(freeFramePtr, 0 ,PAGESIZE); //Now the entire page would be 0s
+	memset(freeFramePtr, 0 ,PAGESIZE); //Now the entire page would be 0s
 	return freeFramePtr;
 }
 

@@ -22,9 +22,7 @@ int& OurPointer::operator*() {
 //Overload ++operator
 OurPointer& OurPointer::operator++() {
 	//_adr += sizeof(_adr); TODO this is how we thought it should be. but maybe address should only store up to 1024?
-	int adrBefore = _adr;//TODO eitan testing
 	_adr++;
-	cout << "adrBefore: " << adrBefore << ", _adr: " << _adr << endl;//TODO eitan testing
 	return *this;
 }
 
@@ -42,7 +40,7 @@ OurPointer& OurPointer::operator--() {
 	return *this;
 }
 
-//Overload�operator--
+//Overload operator--
 OurPointer OurPointer::operator--(int) {
 	OurPointer beforeDecrement(_adr,_vrtlMem);
 	this->operator--(); //Using the pre-fix operator we already overloaded

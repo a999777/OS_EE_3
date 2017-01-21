@@ -17,25 +17,39 @@ int* PageTable::GetPage (unsigned int adr) {
 	//Separating the virtual address into meaningful numbers.adr represents which number of int is about to be allocated.
 	int pageDirectoryEntryNum;
 	int pageTableEntryNum;
+	int offsetNum;
 
 	CHANGE_ADR_INT_TO_ADR(adr);
 	GET_MSB_BITS(adr, pageDirectoryEntryNum);
 	GET_MIDDLE_BITS(adr, pageTableEntryNum);
+	GET_OFFSET_BITS(adr, offsetNum);
 
-	//Checking if the inner table is valid. If not- allocating it.
+	unsigned int logPageNumber = adr / 4096;
+	unsigned int logVirtualAddress = adr;
+	int logPageFault = 0;
+	int logSwapDevice = 0;
+	int logEvicted = -1;
+	int logAllocatedTableEntries = 0;
+
+	//Checking if the inner table entry is valid. If not- allocating it.
 	if(!_outerPageTable[pageDirectoryEntryNum].is_valid()) {
 		_outerPageTable[pageDirectoryEntryNum].create_inner_table();
+		logAllocatedTableEntries = 1;
 		_outerPageTable[pageDirectoryEntryNum].set_valid(true);
 	}
 
 	//Checking if the inner table entry is valid. If not- linking it to a free address.
 	if(!_outerPageTable[pageDirectoryEntryNum].is_inner_entry_valid(pageTableEntryNum)) {
 
+		logPageFault = 1;
+
 		if(_outerPageTable[pageDirectoryEntryNum].was_inner_entry_valid(pageTableEntryNum)) {
 			/*If the inner entry is not valid and it was linked then we have to page it in.
 			 Since we only swap out when we have no room left, and we never "delete" frames,
 			 I think we can assume that we have to swap out a frame in order to make room for the new one */
-			cout << "try try try try try try try" << endl;//TODO eitan test
+		//	cout << "try try try try try try try" << endl;//TODO eitan test
+			logSwapDevice = 1;
+			//TODO logEvicted should be handled here
 			int* freeAdr = _virtMem->GetFreeFrame();
 			int frameToPullFromSwap = (GetPage(adr) - PhysMem::Access().GetFrame(0));
 			frameToPullFromSwap /= 1024; //TODO make sure
@@ -52,27 +66,13 @@ int* PageTable::GetPage (unsigned int adr) {
 		}
 	}
 
+	int* physicalFrameAddress = _outerPageTable[pageDirectoryEntryNum].get_page_address(pageTableEntryNum);
+	unsigned int logPhysicalAddress = (physicalFrameAddress - PhysMem::Access().GetFrame(0))*4 + offsetNum;
 
-/*	if(pageTableEntryNum == 61)  { //FIXME debug
-		int off ;
-		GET_OFFSET_BITS(adr,off);
-		off /= 4; //Now we have it in ints again
-		if(off > 800)
-		cout << "@@@@@ About to return from frame number 61. Int_Address number is " << off;
-		cout << " and address of frame: " << hex << _outerPageTable[pageDirectoryEntryNum].get_page_address(pageTableEntryNum) << endl;
-	}*/
+	LOG_PRINT(logFile,logPageNumber,logVirtualAddress,logPhysicalAddress,logPageFault,logSwapDevice,logEvicted,logAllocatedTableEntries);
 
-	//FIXME debug
-/*	if(pageTableEntryNum == 61) {
-		int off ;
-		GET_OFFSET_BITS(adr,off);
-		if(off == 0) {
-			cout << "when creating the entry number 61, sending byte
-		}
-	}*/
-
-	//Returning the physical address
-	return _outerPageTable[pageDirectoryEntryNum].get_page_address(pageTableEntryNum);
+	//Returning the physical address of the page
+	return physicalFrameAddress;
 }
 
 void PageTable::setTableEntryInvalid(int PageDirectoryEntry, int PageTableEntry) {

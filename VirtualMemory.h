@@ -32,7 +32,6 @@ private:
 	 * this can also be used as the next address to be allocated.
 	 */
 
-
 public:
 	size_t allocated; //TODO move all this stuff to private
 		queue<int*> freeFramesList;
@@ -40,14 +39,14 @@ public:
 		SwapDevice swap;
 		queue<unsigned int> allocationOrder;
 
-	int* physmemAdds[NUMOFFRAMES] = {0}; //TODO debug
+	int* physmemAdds[NUMOFFRAMES]; //TODO debug
 	/*
 	 * VirtualMemory: Initialize freeFramesList to contain all 64 frame	pointers as given by PhysMem Class,
 	 * initialize the PageTable, give the pageTable a pointer to this object so it can
 	 * utilize GetFreeFrame and	ReleaseFrame
 	 */
-	VirtualMemory(): allocated(0), freeFramesList(queue<int*>()), pageTable(PageTable(this)), swap(SwapDevice()), \
-			allocationOrder(queue<unsigned int>()){
+	VirtualMemory(): allocated(0), freeFramesList(), pageTable(this), swap(SwapDevice()), \
+			allocationOrder(){
 		for(int i = 0; i < NUMOFFRAMES ; i++) {
 			freeFramesList.push(PhysMem::Access().GetFrame(i));	//Now our list will contain pointers to all frames
 			physmemAdds[i] = PhysMem::Access().GetFrame(i); //TODO debug only

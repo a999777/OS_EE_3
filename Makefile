@@ -1,20 +1,20 @@
 # Makefile for the HW3
-CC = g++
-CFLAGS = -g -Wall -std=c++0x
-CCLINK = $(CC)
-OBJS = PhysMem.o SwapDevice.o PageTableEntry.o PageDirectoryEntry.o PageTable.o VirtualMemory.o MySwapTest.o
+CCC = g++
+CXXFLAGS = -g -std=c++0x -Wall 
+CCXXLINK = $(CCC)
+OBJS = PhysMem.o SwapDevice.o PageTableEntry.o PageDirectoryEntry.o PageTable.o VirtualMemory.o testProg2.o
 RM = rm -f
 # Creating the  executable
 Bank: $(OBJS) 
-	$(CCLINK) $(CFLAGS) -o swapTest $(OBJS)
+	$(CCXXLINK) $(CXXFLAGS) -o testProg2 $(OBJS)
 # Creating the object files
 PhysMem.o: PhysMem.h PhysMem.cpp
 SwapDevice.o: SwapDevice.h SwapDevice.cpp
-PageTableEntry.o: PagePageTableEntry.h
-PageDirectoryEntry.o: PageDirectoryEntry.h
+PageTableEntry.o: PageTableEntry.h PageTableEntry.cpp
+PageDirectoryEntry.o: PageDirectoryEntry.h PageDirectoryEntry.cpp
 PageTable.o: PageTable.h PageTable.cpp
 VirtualMemory.o: VirtualMemory.h VirtualMemory.cpp
-MySwapTest.o : MySwapTest.cpp
+testProg2.o : testProg2.cpp
 
 # Cleaning old files before new make
 clean: 

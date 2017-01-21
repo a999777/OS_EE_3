@@ -26,48 +26,23 @@ public:
 
 	~PageTableEntry() = default;
 
-	int* get_page_address() {
-		//Pointer to beginning of frame  
-		return _framePointedBegining;
-	}
+	int* get_page_address();
 
-	void set_page_address(int* adr) {
-		//Set the pointer to a frame
-		std::cout << "set page address: " << adr << std::endl;//TODO eitan test
-		_framePointedBegining = adr;
-	}
+	void set_page_address(int* adr);
 
-	bool is_valid() {
-		//Returns whether the entry is valid
-		return _valid;
-	}
+	bool is_valid();
 
-	void set_valid(bool valid) {
-		//Allows to set whether the entry is valid
-		_valid = valid;
-	}
+	void set_valid(bool valid);
 
-	bool was_linked() {
-		//Returns whether the entry was linked sometime to a frame
-		return _linked;
-	}
+	bool was_linked();
 
-	void set_linked(bool linked) {
-		//Allows to set whether the entry is linked to a frame
-		_linked = linked;
-	}
+	void set_linked(bool linked);
 
 private:
 	bool _valid;
 	int* _framePointedBegining;
 	bool _linked;
 };
-
-
-
-
-
-
 
 
 #endif /* PAGETABLEENTRY_H_ */

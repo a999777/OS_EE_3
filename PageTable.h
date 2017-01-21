@@ -8,6 +8,7 @@
 #ifndef PAGETABLE_H_
 #define PAGETABLE_H_
 
+#include <fstream>
 #include "PageDirectoryEntry.h"
 
 //TODO support in log file should be added, as requested in pdf
@@ -19,12 +20,15 @@ class PageTable {
 private:
 	VirtualMemory* _virtMem;
 	PageDirectoryEntry* _outerPageTable;
+	std::ofstream logFile;
 
 public:
 	PageTable(VirtualMemory* virtMem) : _virtMem(virtMem) {
 		//_outerPageTable = (PageDirectoryEntry*)malloc(sizeof(PageDirectoryEntry)*NUM_OF_ENTRIES);
 		//FIXME the pdf says malloc. But malloc does not call constructors. is new okay?
 		_outerPageTable = new PageDirectoryEntry[NUM_OF_ENTRIES];
+		logFile.open("log.csv");
+		logFile <<"Page Number,Virtual Address,Physical Address,Page Fault,Swap,Evicted,Allocated Page Table Entries" << endl;
 		//After that action we have 1024 un-initialized Page Directory Entries
 	}
 

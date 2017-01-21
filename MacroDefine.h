@@ -32,6 +32,11 @@
 		adr = adr << 2; \
 		} while(0)
 
+#define LOG_PRINT(logName,a,b,c,d,e,f,g) do { \
+		logName <<a<<","<<b<<","<<c<<","<<d<<","<<e<<","<<f<<","<<g; \
+		logName << endl; \
+		} while(0)
+
 
 
 #endif /* OS_HM3_MACRODEFINE_H_ */

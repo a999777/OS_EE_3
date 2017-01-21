@@ -15,6 +15,7 @@
 using namespace std;
 
 //TODO just for debugging!!!
+/*
 void printPhyMem(VirtualMemory* m, int maxframe) {
 	for(int i = 0 ; i <= maxframe ; i++) {
 		cout << "Memory Frame Number " << i << ". Address: " << m->mem->GetFrame(i) << " Values:" << endl;
@@ -26,7 +27,7 @@ void printPhyMem(VirtualMemory* m, int maxframe) {
 		cout << endl;
 	}
 
-}
+}*/
 
 int main(){
 
@@ -50,7 +51,7 @@ int main(){
 		cout << "MATRIX variable number " << i << ": " << (*mat) << " and address is " << mat._vrtlMem->GetPage(mat._adr) << endl;
 		(mat++);
 	}
-	printPhyMem(&vrtlMem, 0 );
+	//printPhyMem(&vrtlMem, 0 );
 	mat = matBase;
 	//cout << "mat address is " << mat._vrtlMem->GetPage(mat._adr) << endl;
 	//cout << "matBase address is " << matBase._vrtlMem->GetPage(mat._adr) << endl;
@@ -61,7 +62,7 @@ int main(){
 		//cout << "VECTOR variable number " << i << ": " << " and address is " << vec._vrtlMem->GetPage(mat._adr) << endl;
 		*(res++) = 0;
 	}
-	printPhyMem(&vrtlMem, 0 );
+	//printPhyMem(&vrtlMem, 0 );
 	vec = vecBase;
 	res = resBase;
 
