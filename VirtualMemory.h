@@ -57,7 +57,9 @@ public:
 		return ptr;
 	}
 
-	int* GetPage(unsigned int adr) {return pageTable.GetPage(adr); }
+	int* GetPage(unsigned int adr) {
+		return pageTable.GetPage(adr);
+	}
 
 private:
 	/*The number of ints already allocated, ((allocated *4) =

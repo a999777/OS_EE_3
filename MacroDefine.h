@@ -9,32 +9,27 @@
 #define _MACRODEFINE_H_
 
 #define NUMOFFRAMES 64
-#define FRAME_NOT_ALLOCATED (-1)
-#define SUCCESS 0
-#define MAX_SPACE_ALLOWED (1048576)
-#define ERROR_RESULT (-1)
-#define SUCCESS_RESULT (0)
-#define AND_FOR_DIRECTORY_BITS 4290772992 //for logical and - 11111111110000000000000000000000
-#define SHIFT_FOR_DIRECTORY_BITS 22	//for logical shift right
-#define AND_FOR_PAGE_BITS 4190208 //for logical and - 00000000001111111111000000000000
-#define SHIFT_FOR_PAGE_BITS 12	//for logical shift right
-#define AND_FOR_OFFSET_BITS 4095 //for logical and - 00000000000000000000111111111111
+#define INT_SIZE 4
+#define TABLE_SIZE 1024
+#define PAGE_SIZE 4096
+#define ERROR_RESULT -1
+#define SUCCESS_RESULT 0
 
 //TODO this file has to be changed too
 
 #define GET_OFFSET_BITS(adr, saveto) do { \
-		saveto = adr & AND_FOR_OFFSET_BITS; \
+		saveto = adr & 4095; \
 		saveto = saveto >> 2; \
 		} while(0)
 
 #define GET_MIDDLE_BITS(adr, saveto) do { \
-		saveto = adr & AND_FOR_PAGE_BITS; \
-		saveto = saveto >> SHIFT_FOR_PAGE_BITS; \
+		saveto = adr & 4190208; \
+		saveto = saveto >> 12; \
 		} while(0)
 
 #define GET_MSB_BITS(adr, saveto) do { \
-		saveto = adr & AND_FOR_DIRECTORY_BITS; \
-		saveto = saveto >> SHIFT_FOR_DIRECTORY_BITS; \
+		saveto = adr & 4290772992; \
+		saveto = saveto >> 22; \
 		} while(0)
 
 #define CHANGE_ADR_INT_TO_ADR(adr) do { \

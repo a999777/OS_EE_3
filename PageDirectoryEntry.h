@@ -3,6 +3,12 @@
 
 #include "PageTableEntry.h"
 
+/**
+ * This class represents an entry of the outer page table, which is actually
+ * an inner page table. There are 1024 of these. Each one holds an array of
+ * 1024 PageTableEntries, that represents an inner page table.
+ */
+
 class PageDirectoryEntry {
 
 public:
@@ -12,8 +18,9 @@ public:
 
 	//Destructor. Makes sure that the inner table is deleted if allocated.
 	~PageDirectoryEntry() {
-		if (this->_innerTable != NULL)
-			delete (this->_innerTable);
+		if (_innerTable != NULL) {
+			delete (_innerTable);
+		}
 	}
 
 	//Link the outer table to an inner table by address of array.
@@ -29,7 +36,6 @@ public:
 	void set_valid(bool valid);
 
 private:
-	//Pointer to an innerTable.
 	PageTableEntry* _innerTable;
 	bool _valid;
 };
