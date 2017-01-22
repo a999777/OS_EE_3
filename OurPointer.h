@@ -6,15 +6,33 @@ class VirtualMemory;
 
 class OurPointer {
 public:
-	OurPointer(int adr, VirtualMemory* vrtlMem); //Constructor
-	~OurPointer(){}; //Destructor
-	int& operator*(); //Overload operator*
-	OurPointer& operator++(); //Overload ++operator
-	OurPointer operator++(int); //Overload operator++
-	OurPointer& operator--(); //Overload operator??
-	OurPointer operator--(int); //Overload ??operator
+	//Constructor
+	OurPointer(int adr, VirtualMemory* vrtlMem) {
+		_adr = adr << 2;
+		_vrtlMem = vrtlMem;
+	}
+
+	 //Destructor
+	~OurPointer() = default;
+
+	//Overload operator*
+	int& operator*();
+
+	//Overload ++operator
+	OurPointer& operator++();
+
+	//Overload operator++
+	OurPointer operator++(int);
+
+	//Overload --operator
+	OurPointer& operator--();
+
+	//Overload operator--
+	OurPointer operator--(int);
 private:
-	unsigned int _adr; //the virtual address
-	VirtualMemory* _vrtlMem; //for requesting translations
+	//Storing the virtual address
+	unsigned int _adr;
+
+	VirtualMemory* _vrtlMem;
 };
 #endif

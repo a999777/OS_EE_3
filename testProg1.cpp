@@ -3,7 +3,7 @@
 #include "OurPointer.h"
 #include "VirtualMemory.h"
 //#define VECSIZE 300
-#define VECSIZE 600
+#define VECSIZE 300
 
 using namespace std;
 

@@ -1,18 +1,37 @@
 #ifndef _PAGE_DIRECTORY_ENTRY
 #define _PAGE_DIRECTORY_ENTRY
+
 #include "PageTableEntry.h"
 
 class PageDirectoryEntry {
-private:
-	PageTableEntry* _innerTable; // pointer to second level of the page table
-	bool _valid;
+
 public:
-	PageDirectoryEntry();
-	~PageDirectoryEntry();
-	void set_table_address(PageTableEntry* adr); //Set the pointer to a table
-	PageTableEntry* get_table_address(); //Pointer to beginning of table
-	bool is_valid(); //Returns whether the entry is valid
-	void set_valid(bool valid); //Allows to set whether the entry is valid
+
+	//Constructor
+	PageDirectoryEntry() : _innerTable(NULL),_valid(false) {}
+
+	//Destructor. Makes sure that the inner table is deleted if allocated.
+	~PageDirectoryEntry() {
+		if (this->_innerTable != NULL)
+			delete (this->_innerTable);
+	}
+
+	//Link the outer table to an inner table by address of array.
+	void set_inner_table_address(PageTableEntry* innerTableAdr);
+
+	 //Return a pointer to the beginning of the inner table
+	PageTableEntry* get_inner_table_address();
+
+	//Returns whether the entry is valid
+	bool is_valid();
+
+	 //Allows to set whether the entry is valid
+	void set_valid(bool valid);
+
+private:
+	//Pointer to an innerTable.
+	PageTableEntry* _innerTable;
+	bool _valid;
 };
 
 #endif

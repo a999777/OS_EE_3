@@ -1,42 +1,18 @@
 #include "VirtualMemory.h"
-#include <queue>
 
-//***********************************************************************
-// function name: VirtualMemory constructor
-// Description: initiate phys mem
-// Parameters: N/A
-// Returns: VirtualMemory
-//***********************************************************************
-VirtualMemory::VirtualMemory() {
-	for (int i = 0; i < 64; i++) {
-		this->freeFramesList.push(PhysMem::Access().GetFrame(i));
+int* VirtualMemory :: GetFreeFrame() {
+	if (freeFramesList.empty()) {
+		throw "GetFreeFrame was called but there are no free frames!";
+		//Shouldn't get here. For debug.
 	}
-	this->allocated = 0;
+	int* freeFrame = freeFramesList.front();
+	freeFramesList.pop();
+    memset(freeFrame, 0, PAGESIZE);
+	return freeFrame;
 }
 
-//***********************************************************************
-// function name: GetFreeFrame
-// Description: returns free frame if avilable
-// Parameters: N/A
-// Returns: int*
-//***********************************************************************
-int* VirtualMemory::GetFreeFrame() {
-	if (this->freeFramesList.empty()) {
-		return NULL;
-	}
-	int* framePtr = this->freeFramesList.front(); //fornt is oldest item in the queue, back is the newest
-	this->freeFramesList.pop();
-	memset(framePtr, 0, PAGESIZE);
-	return framePtr;
-}
-
-//***********************************************************************
-// function name: ReleaseFrame
-// Description: relese free frame after page swapped out
-// Parameters: frame number
-// Returns: N/A
-//***********************************************************************
-void VirtualMemory::ReleaseFrame(int* framePointer) {
+void VirtualMemory :: ReleaseFrame (int* framePointer)
+{
 	memset(framePointer, 0, PAGESIZE);
-	this->freeFramesList.push(framePointer);
+	freeFramesList.push(framePointer);
 }

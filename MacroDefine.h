@@ -20,8 +20,11 @@
 #define SHIFT_FOR_PAGE_BITS 12	//for logical shift right
 #define AND_FOR_OFFSET_BITS 4095 //for logical and - 00000000000000000000111111111111
 
+//TODO this file has to be changed too
+
 #define GET_OFFSET_BITS(adr, saveto) do { \
 		saveto = adr & AND_FOR_OFFSET_BITS; \
+		saveto = saveto >> 2; \
 		} while(0)
 
 #define GET_MIDDLE_BITS(adr, saveto) do { \
@@ -44,13 +47,13 @@
 		} while(0)
 
 #define SET_SWAPPED_MACRO(a, b, c) do { \
-		this->_outerPageTable[a].get_table_address()[b].set_swapped(c); \
+		this->_outerPageTable[a].get_inner_table_address()[b].set_swapped(c); \
 		} while(0)
 
 #define WRITE_FRAME_TO_SWAP(a, b) do { \
-		mem->swapDevice.WriteFrameToSwapDevice(convert_adr_to_not_offset(a), b); \
+		_vrtlMem->swapDevice.WriteFrameToSwapDevice((a >> 12), b); \
 		} while(0)
 
-#define GET_INNER_PAGE_ADDRESS(a, b) this->_outerPageTable[a].get_table_address()[b].get_page_address();
+#define GET_INNER_PAGE_ADDRESS(a, b) this->_outerPageTable[a].get_inner_table_address()[b].get_page_address();
 
 #endif /* OS_HM3_MACRODEFINE_H_ */

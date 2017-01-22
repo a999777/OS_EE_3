@@ -1,231 +1,155 @@
-#include <bitset>
-#include <fstream>
 #include <iostream>
 #include <stdio.h>
 #include "PageTable.h"
 #include "VirtualMemory.h"
 
-using namespace std;
-using std::cout;
-using std::endl;
-using std::ofstream;
-using std::string;
+int PageTable::swapOutPage() {
+	//Saving the virtual address of the page allocated first in queue
+	unsigned int oldestAdr = usedPages.front();
+	usedPages.pop();
 
-//***********************************************************************
-// function name: convert_adr_to_directory
-// Description: isolated the directory part of an address
-// Parameters: adr- virtual address
-// Returns: directory number
-//***********************************************************************
-unsigned int convert_adr_to_directory(unsigned int adr) {
-	unsigned int directoryBits;
-	GET_MSB_BITS(adr, directoryBits);
-	return directoryBits;
-	//TODO below is nathans method, above is ours
-	/*unsigned int tmp_val = AND_FOR_DIRECTORY_BITS & adr;
-	 tmp_val = tmp_val >> SHIFT_FOR_DIRECTORY_BITS;
-	 return tmp_val;*/
-}
-//***********************************************************************
-// function name: convert_adr_to_page
-// Description: isolated the page part of an address
-// Parameters: adr- virtual address
-// Returns:page number
-//***********************************************************************
-unsigned int convert_adr_to_page(unsigned int adr) {
-	unsigned int pageBits;
-	GET_MIDDLE_BITS(adr, pageBits);
-	return pageBits;
-	//TODO below is nathans method, above is ours
-	/*unsigned int tmp_val = AND_FOR_PAGE_BITS & adr;
-	 tmp_val = tmp_val >> SHIFT_FOR_PAGE_BITS;
-	 return tmp_val;*/
-}
-
-//***********************************************************************
-// function name: convert_adr_to_offset
-// Description: isolated the offset part of an address
-// Parameters: adr- virtual address
-// Returns:offset number
-//***********************************************************************
-unsigned int convert_adr_to_offset(unsigned int adr) {
-	unsigned int offset;
-	GET_OFFSET_BITS(adr, offset);
-	offset = offset >> (INT_BYTE_SIZE / 2);
-	return offset;
-	//TODO below is nathans method, above is ours
-	/*unsigned int tmp_val = AND_FOR_OFFSET_BITS & adr;
-	 tmp_val = tmp_val >> (INT_BYTE_SIZE / 2);
-	 return tmp_val;*/
-}
-
-unsigned int convert_adr_to_not_offset(unsigned int adr) {
-	return (adr >> SHIFT_FOR_PAGE_BITS);
-}
-
-//***********************************************************************
-// function name: swapper
-// Description: transfer from memory to swap device
-// Parameters: VirtualMemory
-// Returns: N/A
-//***********************************************************************
-int PageTable::swapper(VirtualMemory* mem) {
-	unsigned int swap_adr = this->usedPages.front();
-	this->usedPages.pop();
 	unsigned int directoryBits, pageBits;
-	GET_MSB_BITS(swap_adr, directoryBits);//Directory number
-	GET_MIDDLE_BITS(swap_adr, pageBits);//Page bits
-	int* frameOut = GET_INNER_PAGE_ADDRESS(directoryBits, pageBits);
-	SET_SWAPPED_MACRO(directoryBits, pageBits, true);//Set page swapped to true
-	WRITE_FRAME_TO_SWAP(swap_adr, frameOut);//Write frame to swap device
+	GET_MSB_BITS(oldestAdr, directoryBits);
+	GET_MIDDLE_BITS(oldestAdr, pageBits);
+
+	//Getting the physical frame of oldestAdr, marking oldestAdr as swapped
+	int* swappedFrame = GET_INNER_PAGE_ADDRESS(directoryBits, pageBits);
+	SET_SWAPPED_MACRO(directoryBits, pageBits, true);
+	WRITE_FRAME_TO_SWAP(oldestAdr, swappedFrame);
+
 	//TODO below is nathans method, above is ours
-	/*unsigned int swap_dir = convert_adr_to_directory(swap_adr); //directory number
-	unsigned int swap_pg = convert_adr_to_page(swap_adr); //page number
-	int* frameOut = this->_outerPageTable[swap_dir].get_table_address()[swap_pg].get_page_address();
-	this->_outerPageTable[swap_dir].get_table_address()[swap_pg].set_swapped(
+	/*unsigned int swap_directoryNum = convert_adr_to_directoryNumectory(oldestAdr); //directoryNumectory number
+	unsigned int swap_pageNum = convert_adr_to_page(oldestAdr); //page number
+	int* swappedFrame = this->_outerPageTable[swap_directoryNum].get_inner_table_address()[swap_pageNum].get_page_address();
+	this->_outerPageTable[swap_directoryNum].get_inner_table_address()[swap_pageNum].set_swapped(
 			true);
-	mem->swapDevice.WriteFrameToSwapDevice(convert_adr_to_not_offset(swap_adr),
-			frameOut);*/
-	mem->ReleaseFrame(frameOut);
-	return (swap_adr / PAGE_BYTES);
+	mem->swapDevice.WriteFrameToSwapDevice(convert_adr_to_not_offset(oldestAdr),
+			swappedFrame);*/
+
+	_vrtlMem->ReleaseFrame(swappedFrame);
+	return (oldestAdr / PAGE_SIZE);
 }
 
-//***********************************************************************
-// function name: write
-// Description: log writing function
-// Parameters: printline - a string with the description
-// Returns: N/A
-//***********************************************************************
-//TODO nathans method, no need in ours
-/*void PageTable::write(string printline) {
- if (this->pFile != NULL) {
- fputs(printline.c_str(), this->pFile);
- }
- }*/
+int* PageTable::GetPage(unsigned int adr) {
 
-//***********************************************************************
-// function name: PageTable
-// Description: constractor
-// Parameters: mem reference to virtual memory
-// Returns: N/A
-//***********************************************************************
-PageTable::PageTable() {
-	for (int i = 0; i < TABLE_SIZE; i++) {
-		this->_outerPageTable[i].set_valid(false);
-		this->_outerPageTable[i].set_table_address(NULL);
-	}
-	this->logFile.open("log.csv");
-	//TODO below is nathans method, above is ours
-	/*this->pFile = fopen("log.csv", "w");
-	 std::stringstream tmp_str;
-	 tmp_str
-	 << "Page Number,Virtual Address,Physical Address,Page Fault,Swap,Evicted,Allocated Page Table Entries"
-	 << endl;
-	 write(tmp_str.str());*/
-}
+	/*unsigned int directoryNum = convert_adr_to_directory(adr); //directoryNumectory number
+	unsigned int pageNum = convert_adr_to_page(adr); //page number
+	unsigned int offsetNum = convert_adr_to_offset(adr); //offset*/
 
-//***********************************************************************
-// function name: ~PageDirectoryEntry
-// Description: destractor - free the pte tables
-// Parameters: N/A
-// Returns: N/A
-//***********************************************************************
-PageTable::~PageTable() {
-	this->logFile.close();
-	//fclose(this->pFile);//TODO nathans method, no need in ours
-}
+	unsigned int directoryNum, pageNum, offsetNum;
+	GET_MSB_BITS(adr, directoryNum);
+	GET_MIDDLE_BITS(adr, pageNum);
+	GET_OFFSET_BITS(adr, offsetNum);
 
-//***********************************************************************
-// function name: GetPage 
-// Description: returns the correspond frame of an virtual address
-// Parameters: adr vitrtual address
-// Returns: pointer to the beginung of the frame
-//***********************************************************************
-int* PageTable::GetPage(unsigned int adr, VirtualMemory* mem) {
-	unsigned int dir = convert_adr_to_directory(adr); //directory number
-	unsigned int pg = convert_adr_to_page(adr); //page number
-	unsigned int ofst = convert_adr_to_offset(adr); //offset
-	std::stringstream tmp_str;
-	int page_fault;
-	int is_swapped = 0;
-	int swap_out = -1;
-	//Check if the directory and inner page exist, or one of them doesn't:
-	if (!(this->_outerPageTable[dir].is_valid())) { //Directory isn't valid
-		page_fault = 1;
-		PageTableEntry* tmp_entry = new PageTableEntry[TABLE_SIZE];
-		this->_outerPageTable[dir].set_table_address(tmp_entry); //directory is activated
-		this->_outerPageTable[dir].set_valid(true);
-		if (mem->freeFramesList.empty()) { //check if there are available frames
-			swap_out = swapper(mem); //no avilable frames - going to swap
-			is_swapped = 1;
+	int logPageFault;
+	int logSwap = 0;
+	int logEvicted = -1;
+
+	if (!(_outerPageTable[directoryNum].is_valid())) {
+		//That means the directory doesn't exist
+		logPageFault = 1;
+
+		PageTableEntry* innerTablePtr = new PageTableEntry[TABLE_SIZE];
+
+		//Now we tell the directory where its inner table located and set it to valid
+		_outerPageTable[directoryNum].set_inner_table_address(innerTablePtr);
+		_outerPageTable[directoryNum].set_valid(true);
+
+		//Now we check to see if we have a free frame to allocate for the new address
+		if (_vrtlMem->freeFramesList.empty()) {
+			logEvicted = swapOutPage();
+			logSwap = 1;
 		}
-		this->_outerPageTable[dir].get_table_address()[pg].set_page_address(
-				mem->GetFreeFrame()); //set phys adr to page
-		this->_outerPageTable[dir].get_table_address()[pg].set_valid(true); //page is activated
-		this->_outerPageTable[dir].get_table_address()[pg].set_swapped(false); // page pointed to mem in ram- not in swap device
-		this->usedPages.push(adr); // insert page use in frame
-		LOG_PRINT(this->logFile, adr / PAGE_BYTES, adr,
-				(((&(this->_outerPageTable[dir].get_table_address()[pg].get_page_address()[ofst]) - &PhysMem::Access().GetFrame(0)[0]) + dir * TABLE_SIZE)* INT_BYTE_SIZE),
-				page_fault, is_swapped, swap_out, "1");
+
+		//When we get here we have a frame. we tell the page which one is it and set
+		//the page to be valid and not swapped. Then we insert to queue
+		_outerPageTable[directoryNum].get_inner_table_address()[pageNum].set_page_address(_vrtlMem->GetFreeFrame());
+		_outerPageTable[directoryNum].get_inner_table_address()[pageNum].set_valid(true);
+		_outerPageTable[directoryNum].get_inner_table_address()[pageNum].set_swapped(false);
+		usedPages.push(adr);
+
+		//Printing the log before returning.
+		LOG_PRINT(logFile, adr / PAGE_SIZE, adr,
+				(((&(this->_outerPageTable[directoryNum].get_inner_table_address()[pageNum].get_page_address()[offsetNum]) - &PhysMem::Access().GetFrame(0)[0]) + directoryNum * TABLE_SIZE)* INT_SIZE),
+				logPageFault, logSwap, logEvicted, "1"); //TODO Amit: I don't like it. Change it
+
 		//TODO below is nathans method, above is ours
-		/*tmp_str << (adr / PAGE_BYTES) << "," << adr << ","
-		 << ((&this->_outerPageTable[dir].get_table_address()[pg].get_page_address()[ofst]
-		 - &PhysMem::Access().GetFrame(0)[0]) + dir * TABLE_SIZE)
-		 * INT_BYTE_SIZE << "," << page_fault << ","
-		 << is_swapped << "," << swap_out << "," << "1" << endl;
+		/*tmp_str << (adr / PAGE_SIZE) << "," << adr << ","
+		 << ((&this->_outerPageTable[directoryNum].get_inner_table_address()[pageNum].get_page_address()[offsetNum]
+		 - &PhysMem::Access().GetFrame(0)[0]) + directoryNum * TABLE_SIZE)
+		 * INT_SIZE << "," << logPageFault << ","
+		 << logSwap << "," << logEvicted << "," << "1" << endl;
 		 write(tmp_str.str());*/
-		return &tmp_entry[pg].get_page_address()[ofst];
-	} else if (!((this->_outerPageTable[dir].get_table_address())[pg].is_valid())) { //Page isn't valid
-		page_fault = 1;
-		if (mem->freeFramesList.empty()) { //check if there are available frames
-			swap_out = swapper(mem); //no avilable frames - going to swap
-			is_swapped = 1;
+		return &innerTablePtr[pageNum].get_page_address()[offsetNum];
+
+	} else if (!((_outerPageTable[directoryNum].get_inner_table_address())[pageNum].is_valid())) {
+		//If we get here that means that the page is not valid.
+		logPageFault = 1;
+
+		//Now we check to see if we have a free frame to allocate for the new address
+		if (_vrtlMem->freeFramesList.empty()) {
+			logEvicted = swapOutPage();
+			logSwap = 1;
 		}
-		this->_outerPageTable[dir].get_table_address()[pg].set_page_address(
-				mem->GetFreeFrame()); //set phys adr to page
-		this->_outerPageTable[dir].get_table_address()[pg].set_valid(true); //page is activated
-		this->_outerPageTable[dir].get_table_address()[pg].set_swapped(false); // page pointed to mem in ram- not in swap device
-		this->usedPages.push(adr); // insert page use in frame
-		LOG_PRINT(this->logFile, adr / PAGE_BYTES, adr,
-				(((&(this->_outerPageTable[dir].get_table_address()[pg].get_page_address()[ofst]) - &PhysMem::Access().GetFrame(0)[0]) + dir * TABLE_SIZE)* INT_BYTE_SIZE),
-				page_fault, is_swapped, swap_out, "0");
+
+		//When we get here we have a frame. we tell the page which one is it and set
+		//the page to be valid and not swapped. Then we insert to queue
+		_outerPageTable[directoryNum].get_inner_table_address()[pageNum].set_page_address(_vrtlMem->GetFreeFrame());
+		_outerPageTable[directoryNum].get_inner_table_address()[pageNum].set_valid(true);
+		_outerPageTable[directoryNum].get_inner_table_address()[pageNum].set_swapped(false);
+		usedPages.push(adr);
+
+		//Printing the log before returning.
+		LOG_PRINT(this->logFile, adr / PAGE_SIZE, adr,
+				(((&(this->_outerPageTable[directoryNum].get_inner_table_address()[pageNum].get_page_address()[offsetNum]) - &PhysMem::Access().GetFrame(0)[0]) + directoryNum * TABLE_SIZE)* INT_SIZE),
+				logPageFault, logSwap, logEvicted, "0");
 		//TODO below is nathans method, above is ours
-		/*tmp_str << (adr / PAGE_BYTES) << "," << adr << ","
-		 << ((&(this->_outerPageTable[dir].get_table_address()[pg].get_page_address()[ofst])
+		/*tmp_str << (adr / PAGE_SIZE) << "," << adr << ","
+		 << ((&(this->_outerPageTable[directoryNum].get_inner_table_address()[pageNum].get_page_address()[offsetNum])
 		 - &PhysMem::Access().GetFrame(0)[0]))
-		 * INT_BYTE_SIZE << "," << page_fault << ","
-		 << is_swapped << "," << swap_out << "," << "0" << endl;
+		 * INT_SIZE << "," << logPageFault << ","
+		 << logSwap << "," << logEvicted << "," << "0" << endl;
 		 write(tmp_str.str());*/
-		return &_outerPageTable[dir].get_table_address()[pg].get_page_address()[ofst];
-	} else { //Directory and page are valid
-		page_fault = 0;
-		//Check if page is pointed to swap device:
-		if (this->_outerPageTable[dir].get_table_address()[pg].is_swapped()) {
-			swap_out = swapper(mem); // case in swap device - swap out one page
-			is_swapped = 1;
-			page_fault = 1;
-			this->_outerPageTable[dir].get_table_address()[pg].set_page_address(
-					mem->GetFreeFrame()); //set phys adr to page
-			int* frame_in =
-					this->_outerPageTable[dir].get_table_address()[pg].get_page_address();
-			this->usedPages.push(adr); // insert page use in frame
-			if (mem->swapDevice.ReadFrameFromSwapDevice(
-					convert_adr_to_not_offset(adr), frame_in) == -1)
+		return &_outerPageTable[directoryNum].get_inner_table_address()[pageNum].get_page_address()[offsetNum];
+	} else {
+		//The directory and the page are valid. We need to check if the page is swapped.
+		logPageFault = 0;
+
+		//Checking if our page is actually in the swap device
+		if (_outerPageTable[directoryNum].get_inner_table_address()[pageNum].is_swapped()) {
+			//If the page in the swap device, we need to swap it in. This is what we do.
+			logEvicted = swapOutPage();
+			logSwap = 1;
+			logPageFault = 1;
+
+			//Giving our page the free frame we got, getting the address of the frame
+			//And inserting the page into the queue. Also telling the page it is not in swap
+			_outerPageTable[directoryNum].get_inner_table_address()[pageNum].set_page_address(_vrtlMem->GetFreeFrame());
+			_outerPageTable[directoryNum].get_inner_table_address()[pageNum].set_swapped(false);
+			int* frameAdr = _outerPageTable[directoryNum].get_inner_table_address()[pageNum].get_page_address();
+			usedPages.push(adr); // insert page use in frame
+
+			//Now we actually swap the information using the swap device
+			if (_vrtlMem->swapDevice.ReadFrameFromSwapDevice((adr >> 12), frameAdr) == -1){
 				cout << "data for page number: "
-						<< convert_adr_to_not_offset(adr) << " doesnt exist"
-						<< endl;
+						<< (adr >> 12) << " doesnt exist"
+						<< endl;	//TODO fix
+			}
 		}
-		LOG_PRINT(this->logFile, adr / PAGE_BYTES, adr,
-				(((&(this->_outerPageTable[dir].get_table_address()[pg].get_page_address()[ofst]) - &PhysMem::Access().GetFrame(0)[0]) + dir * TABLE_SIZE)* INT_BYTE_SIZE),
-				page_fault, is_swapped, swap_out, "0");
+
+		//Printing the log before returning
+		LOG_PRINT(this->logFile, adr / PAGE_SIZE, adr,
+				(((&(this->_outerPageTable[directoryNum].get_inner_table_address()[pageNum].get_page_address()[offsetNum]) - &PhysMem::Access().GetFrame(0)[0]) + directoryNum * TABLE_SIZE)* INT_SIZE),
+				logPageFault, logSwap, logEvicted, "0");
+
 		//TODO below is nathans method, above is ours
-		/*tmp_str << (adr / PAGE_BYTES) << "," << adr << ","
-		 << (((&(this->_outerPageTable[dir].get_table_address()[pg].get_page_address()[ofst])
-		 - &PhysMem::Access().GetFrame(0)[0]) + dir * TABLE_SIZE)
-		 * INT_BYTE_SIZE) << "," << page_fault << ","
-		 << is_swapped << "," << swap_out << "," << "0" << endl;
+		/*tmp_str << (adr / PAGE_SIZE) << "," << adr << ","
+		 << (((&(this->_outerPageTable[directoryNum].get_inner_table_address()[pageNum].get_page_address()[offsetNum])
+		 - &PhysMem::Access().GetFrame(0)[0]) + directoryNum * TABLE_SIZE)
+		 * INT_SIZE) << "," << logPageFault << ","
+		 << logSwap << "," << logEvicted << "," << "0" << endl;
 		 write(tmp_str.str());*/
-		this->_outerPageTable[dir].get_table_address()[pg].set_swapped(false); // page pointed to mem in ram- not in swap device
-		return &(this->_outerPageTable[dir].get_table_address()[pg].get_page_address()[ofst]);
+
+		return &(this->_outerPageTable[directoryNum].get_inner_table_address()[pageNum].get_page_address()[offsetNum]);
 	}
 }

@@ -1,79 +1,38 @@
 #include "OurPointer.h"
 #include "VirtualMemory.h"
 
-#define PAGE_TABLE_FULL 1048576
-#define BYTE_SIZE 4
-
-//***********************************************************************
-// function name: OurPointer consractor
-// Description: initiate the adr value & virt mem
-// Parameters: adr & vitrtual address
-// Returns: OurPointer
-//***********************************************************************
-OurPointer::OurPointer(int adr, VirtualMemory* vrtlMem) {
-	int adr_temp = adr << (BYTE_SIZE / 2);
-	this->_adr = adr_temp;
-	this->_vrtlMem = vrtlMem;
-}
-
-//***********************************************************************
-// function name: operator *
-// Description: returns the value the pointer points to
-// Parameters: N/A
-// Returns: value by reference
-//***********************************************************************
 int& OurPointer::operator*() {
-	return *((this->_vrtlMem)->GetPage(this->_adr));
+	return *((_vrtlMem)->GetPage(_adr));
 }
 
-//***********************************************************************
-// function name: operator++
-// Description: increase the addr of the pointer by one
-// Parameters: N/a
-// Returns: Ourpointer after the increase
-//***********************************************************************
+//Prefix
 OurPointer& OurPointer::operator++() {
-	if ((this->_adr + BYTE_SIZE) > (VIRTMEMSIZE >> (BYTE_SIZE / 2))) {
+	if (_adr + sizeof(int) > (VIRTMEMSIZE >> 2)) {
 		throw "We are limited to 4294967296 bytes with our 32 bit address size";
 	}
-	this->_adr = ((this->_adr) + BYTE_SIZE);
-	return (*this);
+	_adr += sizeof(int);
+	return *this;
 }
 
-//***********************************************************************
-// function name: operator++
-// Description: increase the addr of the pointer by one
-// Parameters: N/a
-// Returns: Ourpointer before the increase
-//***********************************************************************
+//Postfix
 OurPointer OurPointer::operator++(int) {
-	OurPointer Newpointer((this->_adr) >> (BYTE_SIZE / 2), this->_vrtlMem);
+	OurPointer beforeIncrement((_adr >> 2), _vrtlMem);
 	operator++();
-	return Newpointer;
+	return beforeIncrement;
 }
 
-//***********************************************************************
-// function name: operator++
-// Description: decrease the addr of the pointer by one
-// Parameters: N/a
-// Returns: Ourpointer after the decrease
-//***********************************************************************
+//Prefix (I think there is a mistake in the pdf TODO)
 OurPointer& OurPointer::operator--() {
-	if ((this->_adr - BYTE_SIZE) < 0) {
-		throw "First of the memory";
+	if ((_adr - sizeof(int)) < 0) {
+		throw "Illegal decrement!";
 	}
-	this->_adr = ((this->_adr) - BYTE_SIZE);
-	return (*this);
+	_adr -= sizeof(int);
+	return *this;
 }
 
-//***********************************************************************
-// function name: operator++
-// Description: decrease the addr of the pointer by one
-// Parameters: N/a
-// Returns: Ourpointer before the decrease
-//***********************************************************************
+//Postfix
 OurPointer OurPointer::operator--(int) {
-	OurPointer Newpointer((this->_adr) >> (BYTE_SIZE / 2), this->_vrtlMem);
+	OurPointer beforeDecrement((_adr >> 2),_vrtlMem);
 	operator--();
-	return Newpointer;
+	return beforeDecrement;
 }
