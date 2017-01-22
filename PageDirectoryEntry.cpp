@@ -1,14 +1,12 @@
 #include "PageDirectoryEntry.h"
 
-
 //***********************************************************************
 // function name: PageDirectoryEntry
 // Description: constractor - initilaize PDE to 0
 // Parameters: N/A
 // Returns: N/A
 //***********************************************************************
-PageDirectoryEntry::PageDirectoryEntry()
-{
+PageDirectoryEntry::PageDirectoryEntry() {
 	this->_innerTable = NULL;
 	this->_valid = false;
 }
@@ -19,10 +17,9 @@ PageDirectoryEntry::PageDirectoryEntry()
 // Parameters: N/A
 // Returns: N/A
 //***********************************************************************
-PageDirectoryEntry::~PageDirectoryEntry()
-{
+PageDirectoryEntry::~PageDirectoryEntry() {
 	if (this->_innerTable != NULL)
-		delete(this->_innerTable);
+		delete (this->_innerTable);
 }
 
 //***********************************************************************
@@ -31,8 +28,7 @@ PageDirectoryEntry::~PageDirectoryEntry()
 // Parameters: PTE table pointer
 // Returns: N/A
 //***********************************************************************
-void PageDirectoryEntry::set_table_address(PageTableEntry* adr)
-{
+void PageDirectoryEntry::set_table_address(PageTableEntry* adr) {
 	this->_innerTable = adr;
 }
 
@@ -42,8 +38,7 @@ void PageDirectoryEntry::set_table_address(PageTableEntry* adr)
 // Parameters: N/A
 // Returns: pointer to the begining of the PTE table
 //***********************************************************************
-PageTableEntry* PageDirectoryEntry::get_table_address()
-{
+PageTableEntry* PageDirectoryEntry::get_table_address() {
 	return this->_innerTable;
 }
 
@@ -53,11 +48,9 @@ PageTableEntry* PageDirectoryEntry::get_table_address()
 // Parameters: N/A
 // Returns: true -  Directory is valid, false -  Directory isn't valid
 //***********************************************************************
-bool PageDirectoryEntry::is_valid()
-{
+bool PageDirectoryEntry::is_valid() {
 	return this->_valid;
 }
-
 
 //***********************************************************************
 // function name: set_valid
@@ -65,8 +58,7 @@ bool PageDirectoryEntry::is_valid()
 // Parameters: validition new value
 // Returns: N/A
 //***********************************************************************
-void PageDirectoryEntry::set_valid(bool valid)
-{
+void PageDirectoryEntry::set_valid(bool valid) {
 	this->_valid = valid;
 }
 

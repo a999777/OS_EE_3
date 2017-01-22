@@ -8,8 +8,7 @@
 // Returns: VirtualMemory
 //***********************************************************************
 VirtualMemory::VirtualMemory() {
-	int i;
-	for (i = 0; i < 64; i++) {
+	for (int i = 0; i < 64; i++) {
 		this->freeFramesList.push(PhysMem::Access().GetFrame(i));
 	}
 	this->allocated = 0;

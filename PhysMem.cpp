@@ -4,7 +4,6 @@ PhysMem & PhysMem::Access() {
 	static PhysMem single;
 	if (physMem == NULL) {
     physMem = (int*)malloc(PHYSMEMSZ);
-   //cout << "phys addr is: " << physMem << endl;
 	}
 	return single;
 }

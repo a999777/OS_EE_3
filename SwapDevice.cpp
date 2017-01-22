@@ -7,21 +7,21 @@
 
 #include "SwapDevice.h"
 using namespace std;
+
 void SwapDevice::WriteFrameToSwapDevice(int pageNumber, int* pageOut) {
-	if (_data[pageNumber] == NULL) {
-		if (++_size > 1048576) {
+	if (this->_data[pageNumber] == NULL) {
+		if (++(this->_size) > 1048576) {
 			cerr << "The swap device seems to be using too much space,worth investigating" << endl;
 		}
-		_data[pageNumber] = (int*)malloc(PAGESIZE);
+		this->_data[pageNumber] = (int*) malloc(PAGESIZE);
 	}
 	memcpy(_data[pageNumber], pageOut, PAGESIZE);
 }
-int SwapDevice::ReadFrameFromSwapDevice(int pageNumber, int* pageIn)
-{
-	if (_data[pageNumber] == NULL)
-	{
-		return -1;
+
+int SwapDevice::ReadFrameFromSwapDevice(int pageNumber, int* pageIn) {
+	if (this->_data[pageNumber] == NULL) {
+		return ERROR_RESULT;
 	}
-	memcpy(pageIn, _data[pageNumber], PAGESIZE);
-	return 0;
+	memcpy(pageIn, this->_data[pageNumber], PAGESIZE);
+	return SUCCESS_RESULT;
 }

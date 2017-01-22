@@ -2,7 +2,8 @@
 #include<fstream>
 #include "OurPointer.h"
 #include "VirtualMemory.h"
-#define VECSIZE 300
+//#define VECSIZE 300
+#define VECSIZE 600
 
 using namespace std;
 
@@ -59,5 +60,7 @@ int main(){
     for (int col = 0; col < VECSIZE; ++col)
         matricesFile << *(res++) << " ";
     matricesFile << endl;
+    cout << "done" << endl;
+    return 0;
 }
 

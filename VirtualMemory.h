@@ -8,14 +8,16 @@
 
 #ifndef _VIRTUAL_MEMORY
 #define _VIRTUAL_MEMORY
+
 #include <queue>
-#include "OurPointer.h"
-#include "PhysMem.h"
 #include <stdio.h>
 #include <string.h>
 #include <unordered_set>
+#include "OurPointer.h"
+#include "PhysMem.h"
 #include "PageTable.h"
 #include "SwapDevice.h"
+
 #define PAGESIZE 4096
 #define VIRTMEMSIZE 4294967296
 #define NUMOFFRAMES 64
@@ -25,16 +27,32 @@ using namespace std;
 class VirtualMemory {
 	friend class PageTable;
 public:
-	VirtualMemory(); //Initialize freeFramesList to contain all 64 frame pointers as given by PhysMem Class, initialize the PageTable, give the pageTable a pointer to this object so it can utilize GetFreeFrame and ReleaseFrame
+	/*
+	 * Initialize freeFramesList to contain all 64 frame
+	 * pointers as given by PhysMem Class, initialize the
+	 * PageTable, give the pageTable a pointer to this
+	 * object so it can utilize GetFreeFrame and ReleaseFrame
+	 */
+	VirtualMemory();
 
 	~VirtualMemory() = default;
 
-	int* GetFreeFrame(); //Remove one item from the freeFrameList and return it – suggestion, use memset(framePtr, 0, PAGESIZE) before return, might help debugging!
+	/*
+	 * Remove one item from the freeFrameList and return it.
+	 * suggestion- use memset(framePtr, 0, PAGESIZE) before return, might help debugging!
+	 */
+	int* GetFreeFrame();
 
-	void ReleaseFrame(int* framePointer); //releases the frame pointed by the framePointer, make sure you only use this function with a pointer to the beginning of the Frame!it should be the same pointer as held in the PTE.
+	/*
+	 * Releases the frame pointed by the framePointer,
+	 * make sure you only use this function with a pointer
+	 * to the beginning of the Frame!it should be the same
+	 * pointer as held in the PTE.
+	 */
+	void ReleaseFrame(int* framePointer);
 
-	OurPointer OurMalloc(size_t size) //allocates a pointer, we added the code for your convenience
-			{
+	//allocates a pointer, we added the code for your convenience
+	OurPointer OurMalloc(size_t size) {
 		if (allocated + size >= (VIRTMEMSIZE >> 2)) {
 			throw "We are limited to 4294967296 bytes with our 32 bit address size";
 		}
@@ -48,8 +66,12 @@ public:
 	}
 
 private:
-	size_t allocated; //The number of ints already allocated, ((allocated *4) = (number of bytes already allocated)), this can also be used as the next address to be  allocated.
-	queue<int*>freeFramesList;
+	/*
+	 * The number of ints already allocated, ((allocated *4) = (number of bytes already allocated)),
+	 * this can also be used as the next address to be  allocated.
+	 */
+	size_t allocated;
+	queue<int*> freeFramesList;
 	PageTable pageTable;
 	SwapDevice swapDevice;
 };
