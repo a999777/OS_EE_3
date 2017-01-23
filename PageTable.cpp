@@ -100,6 +100,6 @@ int* PageTable::GetPage(unsigned int adr) {
 	LOG_PRINT(logFile, logPageNumber, adr, logPhysAdd, logPageFault,logSwap,
 			  logEvicted, logAllocatedPageTableEntries);
 
-	return _outerPageTable[directoryNum].get_inner_table_address()[0].get_page_address();
+	return _outerPageTable[directoryNum].get_inner_table_address()[pageNum].get_page_address();
 }
 

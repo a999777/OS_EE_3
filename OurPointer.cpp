@@ -4,11 +4,6 @@
 int& OurPointer::operator*() {
 	unsigned int offset;
 	GET_OFFSET_BITS(_adr, offset);
-	if(_adr == 4096) {
-		cout << "The offset is " << offset << endl;
-		cout << "So we need to return " << _vrtlMem->GetPage(_adr) << " in hex + 0" << endl;
-		cout << "However, we'll return " << (_vrtlMem->GetPage(_adr) + offset) << endl;
-	}// TODO debug */
 	return *(_vrtlMem->GetPage(_adr) + offset); //Since this is pointer arithmetic we don't need to shift back left
 }
 

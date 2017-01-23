@@ -1,6 +1,5 @@
 #ifndef _OUR_POINTER
 #define _OUR_POINTER
-#include "PageTable.h"
 
 class VirtualMemory;
 
@@ -32,7 +31,6 @@ public:
 private:
 	//Storing the virtual address
 	unsigned int _adr;
-
 	VirtualMemory* _vrtlMem;
 };
 #endif

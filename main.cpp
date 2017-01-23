@@ -16,14 +16,11 @@ int main() {
 
 	srand(1);
 	for (int i = 0; i < VECSIZE * VECSIZE; ++i) {
-		if(*mat != 0 && i%1024 != 0) {
-			cout << "Not 0! i = " << i << "'s value is " << *mat<< endl;
-			return 1;
-		}
 		*(mat) = rand() % 100;
 		mat++;
 	}
 	mat = matBase;
+
 	for (int i = 0; i < VECSIZE; ++i) {
 		*(vec++) = rand() % 20000;
 		*(res++) = 0;
